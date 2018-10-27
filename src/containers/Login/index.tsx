@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { Dispatch, Action } from 'redux';
 import { firebase } from '../../lib/firebase';
 
 import { IRootState } from '../../reducers';
-import { listenCurrentUserAction } from '../../reducers/currentUser';
 
 import { IResponse, Status } from '../../models/response';
 import { IUser } from '../../models/user';
@@ -22,27 +20,13 @@ const mapStateToProps = (state: IRootState): IMapStateProps => ({
   currentUser: state.currentUserReducer.currentUser,
 });
 
-interface IMapDispatchProps {
-  listenUser: () => void;
-}
+type AllProps = IMapStateProps & React.Props<{}>;
 
-const mapDispatchToProps = (dispatch: Dispatch<Action>): IMapDispatchProps => ({
-  listenUser: () => listenCurrentUserAction(dispatch),
-});
-
-type AllProps = IMapStateProps & IMapDispatchProps & React.Props<{}>;
-
-const enhance = compose<{}, {}>(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-);
+const enhance = compose<{}, {}>(connect(mapStateToProps));
 
 const LoginContainer = (props: AllProps) => {
   const { currentUser } = props;
-  if (currentUser.status === Status.notYetRequest) {
-    props.listenUser();
+  if (currentUser.status === Status.notYetRequest || currentUser.status === Status.loading) {
     return <Loading />;
   }
 
