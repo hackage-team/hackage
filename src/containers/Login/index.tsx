@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import { firebase } from '../../lib/firebase';
+import { Action, Dispatch } from 'redux';
+import { Redirect } from 'react-router-dom';
 
 import { IRootState } from '../../reducers';
+import { prepareCurrentUserAction } from '../../reducers/currentUser';
 
 import { IResponse, Status } from '../../models/response';
-import { IUser } from '../../models/user';
+import { IUser, loginWithGithub } from '../../models/user';
 
-import Loading from '../../components/Loading';
-
-const provider = new firebase.auth.GithubAuthProvider();
+import Footer from '../../components/Footer';
 
 interface IMapStateProps {
   currentUser: IResponse<IUser>;
@@ -20,14 +20,28 @@ const mapStateToProps = (state: IRootState): IMapStateProps => ({
   currentUser: state.currentUserReducer.currentUser,
 });
 
-type AllProps = IMapStateProps & React.Props<{}>;
+interface IMapDispatchProps {
+  prepareUser: () => void;
+}
 
-const enhance = compose<{}, {}>(connect(mapStateToProps));
+const mapDispatchToProps = (dispatch: Dispatch<Action>): IMapDispatchProps => ({
+  prepareUser: () => prepareCurrentUserAction(dispatch),
+});
+
+type AllProps = IMapStateProps & IMapDispatchProps & React.Props<{}>;
+
+const enhance = compose<{}, {}>(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+);
 
 const LoginContainer = (props: AllProps) => {
   const { currentUser } = props;
-  if (currentUser.status === Status.notYetRequest || currentUser.status === Status.loading) {
-    return <Loading />;
+
+  if (currentUser.status === Status.success && currentUser.res) {
+    return <Redirect to={{ pathname: `/users/${currentUser.res.uid}` }} />;
   }
 
   if (currentUser.status === Status.failure) {
@@ -39,12 +53,13 @@ const LoginContainer = (props: AllProps) => {
       <div>LoginContainer</div>
       <button
         onClick={async () => {
-          const result = await firebase.auth().signInWithPopup(provider);
-          console.log(result);
+          await loginWithGithub();
+          await props.prepareUser();
         }}
       >
         Login with Github
       </button>
+      <Footer />
     </>
   );
 };

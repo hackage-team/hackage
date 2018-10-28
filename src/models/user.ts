@@ -1,5 +1,7 @@
 import { firebase, db } from '../lib/firebase';
 
+const provider = new firebase.auth.GithubAuthProvider();
+
 export interface IUser {
   uid: string;
   name: string;
@@ -48,4 +50,13 @@ export const fetchUserInfo = async (uid: string) => {
 
 const saveUser = (user: IUser) => {
   return db.doc(`users/${user.uid}`).set(user);
+};
+
+export const loginWithGithub = async () => {
+  try {
+    await firebase.auth().signInWithPopup(provider);
+    await checkFirebaseLoginStatus();
+  } catch (e) {
+    console.error(e);
+  }
 };

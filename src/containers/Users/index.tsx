@@ -11,6 +11,7 @@ import { IResponse, Status } from '../../models/response';
 import { IUser } from '../../models/user';
 
 import Loading from '../../components/Loading';
+import AppBase from '../../components/AppBase';
 
 interface IMapStateProps {
   currentUser: IResponse<IUser>;
@@ -43,21 +44,33 @@ const UsersContainer = (props: AllProps) => {
   const { targetUser } = props;
   if (!targetUser || targetUser.status === Status.notYetRequest) {
     props.fetchUser(props.match.params.uid);
-    return <Loading />;
+    return (
+      <AppBase currentUser={props.currentUser}>
+        <Loading />
+      </AppBase>
+    );
   }
 
   if (targetUser.status === Status.loading) {
-    return <Loading />;
+    return (
+      <AppBase currentUser={props.currentUser}>
+        <Loading />
+      </AppBase>
+    );
   }
 
   if (targetUser.status === Status.failure || !targetUser.res) {
-    return <>読み込めませんでした...</>;
+    return (
+      <AppBase currentUser={props.currentUser}>
+        <>読み込めませんでした...</>;
+      </AppBase>
+    );
   }
 
   return (
-    <>
+    <AppBase currentUser={props.currentUser}>
       <div>{JSON.stringify(targetUser)}</div>
-    </>
+    </AppBase>
   );
 };
 
