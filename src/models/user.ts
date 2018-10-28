@@ -20,7 +20,7 @@ export const prepareCurrentUser = async () => {
     return null;
   }
 
-  const user = await fetchCurrentUserInfo(userInfo.uid);
+  const user = await fetchUserInfo(userInfo.uid);
   if (user) {
     return user;
   }
@@ -36,7 +36,7 @@ export const prepareCurrentUser = async () => {
   return newUser;
 };
 
-const fetchCurrentUserInfo = async (uid: string) => {
+export const fetchUserInfo = async (uid: string) => {
   const doc = await db.doc(`users/${uid}`).get();
   const res = doc.data();
 

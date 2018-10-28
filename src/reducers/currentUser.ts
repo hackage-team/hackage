@@ -1,4 +1,3 @@
-// import * as _ from "lodash"
 import { Action, Reducer, Dispatch } from 'redux';
 import { IUser, prepareCurrentUser } from '../models/user';
 import { IResponse, Status } from '../models/response';

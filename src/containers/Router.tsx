@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Route, Switch } from 'react-router-dom';
 
 import TopContainer from './Top';
 import LoginContainer from './Login';
+import UsersContainer from './Users';
 import EventsContainer from './Events';
 import EventsNewContainer from './Events/New';
 import EventsShowContainer from './Events/Show';
@@ -29,6 +30,7 @@ const Router = () => (
       <Switch>
         <Route exact={true} path="/" component={TopContainer} />
         <Route exact={true} path="/login" component={LoginContainer} />
+        <Route exact={true} path="/users/:uid" component={UsersContainer} />
         <Route exact={true} path="/events" component={EventsContainer} />
         <Route exact={true} path="/events/new" component={EventsNewContainer} />
         <Route exact={true} path="/events/:event_id" component={EventsShowContainer} />
