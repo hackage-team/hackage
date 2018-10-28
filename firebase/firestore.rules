@@ -4,7 +4,8 @@ service cloud.firestore {
       allow get: if true;
       allow list: if false;
       allow delete: if false;
-      allow create, update: if request.auth.uid == resource.data.uid;
+      allow update: if request.resource.data.uid == request.auth.uid && request.auth.uid == resource.data.uid;
+      allow create: if request.resource.data.uid == request.auth.uid;
     }
   }
 }

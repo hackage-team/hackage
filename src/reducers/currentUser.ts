@@ -1,6 +1,6 @@
 // import * as _ from "lodash"
 import { Action, Reducer, Dispatch } from 'redux';
-import { IUser, listenCurrentUser } from '../models/user';
+import { IUser, prepareCurrentUser } from '../models/user';
 import { IResponse, Status } from '../models/response';
 
 export interface ICurrentUserState {
@@ -15,20 +15,25 @@ const initialState: ICurrentUserState = {
 };
 
 enum ActionName {
-  listen = 'currentUser/listen',
+  prepare = 'currentUser/listen',
   loading = 'currentUser/loading',
   logout = 'currentUser/logout',
+  failure = 'currentUser/failure',
 }
 
-interface IListenAction extends Action<ActionName.listen> {
+interface IPrepareAction extends Action<ActionName.prepare> {
   user: IUser | null;
 }
 
-export type CurrentUserAction = IListenAction | Action<ActionName.logout> | Action<ActionName.loading>;
+export type CurrentUserAction =
+  | IPrepareAction
+  | Action<ActionName.logout>
+  | Action<ActionName.loading>
+  | Action<ActionName.failure>;
 
 export const currentUserReducer: Reducer<ICurrentUserState, CurrentUserAction> = (state = initialState, action) => {
   switch (action.type) {
-    case ActionName.listen: {
+    case ActionName.prepare: {
       return {
         ...state,
         currentUser: { status: Status.success, res: action.user },
@@ -46,18 +51,29 @@ export const currentUserReducer: Reducer<ICurrentUserState, CurrentUserAction> =
         currentUser: { status: Status.loading, res: state.currentUser.res },
       };
     }
+    case ActionName.failure: {
+      return {
+        ...state,
+        currentUser: { status: Status.failure, res: state.currentUser.res },
+      };
+    }
     default:
       return state;
   }
 };
 
-export const listenCurrentUserAction = (dispatch: Dispatch<CurrentUserAction>) => {
+export const prepareCurrentUserAction = async (dispatch: Dispatch<CurrentUserAction>) => {
   dispatch({ type: ActionName.loading });
-  listenCurrentUser(user => {
-    const action: IListenAction = {
-      type: ActionName.listen,
+
+  try {
+    const user = await prepareCurrentUser();
+    const action: IPrepareAction = {
+      type: ActionName.prepare,
       user: user,
     };
     dispatch(action);
-  });
+  } catch (e) {
+    console.error(e);
+    dispatch({ type: ActionName.failure });
+  }
 };

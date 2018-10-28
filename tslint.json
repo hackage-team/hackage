@@ -30,7 +30,7 @@
     "object-literal-sort-keys": false,
     "object-literal-shorthand": false,
     "jsx-no-lambda": false,
-    "no-submodule-imports": [true, "excluded-module1", "excluded-module2"],
+    "no-submodule-imports": [true, "firebase"],
     "no-implicit-dependencies": false
   },
   "jsRules": {}

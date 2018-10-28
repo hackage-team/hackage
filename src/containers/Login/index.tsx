@@ -30,6 +30,10 @@ const LoginContainer = (props: AllProps) => {
     return <Loading />;
   }
 
+  if (currentUser.status === Status.failure) {
+    return <>ログイン状態の確認に失敗しました...</>;
+  }
+
   return (
     <>
       <div>LoginContainer</div>

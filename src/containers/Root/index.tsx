@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Dispatch, Action } from 'redux';
 
 import { IRootState } from '../../reducers';
-import { listenCurrentUserAction } from '../../reducers/currentUser';
+import { prepareCurrentUserAction } from '../../reducers/currentUser';
 
 import { IResponse, Status } from '../../models/response';
 import { IUser } from '../../models/user';
@@ -18,11 +18,11 @@ const mapStateToProps = (state: IRootState): IMapStateProps => ({
 });
 
 interface IMapDispatchProps {
-  listenUser: () => void;
+  prepareUser: () => void;
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<Action>): IMapDispatchProps => ({
-  listenUser: () => listenCurrentUserAction(dispatch),
+  prepareUser: () => prepareCurrentUserAction(dispatch),
 });
 
 type AllProps = IMapStateProps & IMapDispatchProps & React.Props<{}>;
@@ -41,7 +41,7 @@ const enhance = compose<{}, {}>(
 const RootContainer = (props: AllProps) => {
   const { currentUser } = props;
   if (currentUser.status === Status.notYetRequest) {
-    props.listenUser();
+    props.prepareUser();
   }
 
   return null;
