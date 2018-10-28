@@ -1,4 +1,6 @@
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/auth';
 import * as config from '../config/firebase-config.json';
 
 firebase.initializeApp(config);
