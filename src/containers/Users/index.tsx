@@ -12,7 +12,7 @@ import { IResponse, Status } from '../../models/response';
 import { IUser } from '../../models/user';
 
 import Loading from '../../components/Loading';
-import AppBase from '../../components/AppBase';
+import BaseLayout from '../../components/BaseLayout';
 
 interface IMapStateProps {
   currentUser: IResponse<IUser>;
@@ -49,32 +49,32 @@ const UsersContainer = (props: AllProps) => {
   if (!targetUser || targetUser.status === Status.notYetRequest) {
     props.fetchUser(props.match.params.uid);
     return (
-      <AppBase currentUser={currentUser} logout={logout}>
+      <BaseLayout currentUser={currentUser} logout={logout}>
         <Loading />
-      </AppBase>
+      </BaseLayout>
     );
   }
 
   if (targetUser.status === Status.loading) {
     return (
-      <AppBase currentUser={currentUser} logout={logout}>
+      <BaseLayout currentUser={currentUser} logout={logout}>
         <Loading />
-      </AppBase>
+      </BaseLayout>
     );
   }
 
   if (targetUser.status === Status.failure || !targetUser.res) {
     return (
-      <AppBase currentUser={currentUser} logout={logout}>
+      <BaseLayout currentUser={currentUser} logout={logout}>
         <>読み込めませんでした...</>;
-      </AppBase>
+      </BaseLayout>
     );
   }
 
   return (
-    <AppBase currentUser={currentUser} logout={logout}>
+    <BaseLayout currentUser={currentUser} logout={logout}>
       <div>{JSON.stringify(targetUser)}</div>
-    </AppBase>
+    </BaseLayout>
   );
 };
 

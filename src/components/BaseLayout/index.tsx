@@ -16,7 +16,7 @@ const enhance = compose<{}, IOuterProps>();
 
 type AllProps = IOuterProps & React.Props<{}>;
 
-const AppBase = (props: AllProps) => {
+const BaseLayout = (props: AllProps) => {
   return (
     <>
       <Header currentUser={props.currentUser} logout={props.logout} />
@@ -26,4 +26,4 @@ const AppBase = (props: AllProps) => {
   );
 };
 
-export default enhance(AppBase);
+export default enhance(BaseLayout);
