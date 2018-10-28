@@ -9,6 +9,7 @@ import LoginMenu from './LoginMenu';
 
 interface IOuterProps {
   currentUser: IResponse<IUser>;
+  logout: () => void;
 }
 
 const enhance = compose<{}, IOuterProps>();
@@ -16,14 +17,14 @@ const enhance = compose<{}, IOuterProps>();
 type AllProps = IOuterProps & React.Props<{}>;
 
 const Header = (props: AllProps) => {
-  const { currentUser } = props;
+  const { currentUser, logout } = props;
   const { status, res } = currentUser;
 
   const StatusMenu = () => {
     if (status === Status.success && res) {
-      return <LoginMenu currentUser={res} />;
+      return <LoginMenu currentUser={res} logout={logout} />;
     }
-    return <Link to={{ pathname: '/login' }} />;
+    return <Link to={{ pathname: '/login' }}>login</Link>;
   };
 
   return (

@@ -60,3 +60,7 @@ export const loginWithGithub = async () => {
     console.error(e);
   }
 };
+
+export const logout = async () => {
+  await firebase.auth().signOut();
+};

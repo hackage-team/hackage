@@ -9,6 +9,7 @@ import Footer from '../Footer';
 
 interface IOuterProps {
   currentUser: IResponse<IUser>;
+  logout: () => void;
 }
 
 const enhance = compose<{}, IOuterProps>();
@@ -18,7 +19,7 @@ type AllProps = IOuterProps & React.Props<{}>;
 const AppBase = (props: AllProps) => {
   return (
     <>
-      <Header currentUser={props.currentUser} />
+      <Header currentUser={props.currentUser} logout={props.logout} />
       {props.children}
       <Footer />
     </>

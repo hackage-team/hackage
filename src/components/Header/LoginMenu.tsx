@@ -6,6 +6,7 @@ import { IUser } from '../../models/user';
 
 interface IOuterProps {
   currentUser: IUser;
+  logout: () => void;
 }
 
 const enhance = compose<{}, IOuterProps>();
@@ -13,7 +14,7 @@ const enhance = compose<{}, IOuterProps>();
 type AllProps = IOuterProps & React.Props<{}>;
 
 const LoginMenu = (props: AllProps) => {
-  const { currentUser } = props;
+  const { currentUser, logout } = props;
 
   return (
     <ul>
@@ -21,7 +22,7 @@ const LoginMenu = (props: AllProps) => {
         <Link to={{ pathname: `/users/${currentUser.uid}` }}>profile</Link>
       </li>
       <li>
-        <Link to={{ pathname: `/logout` }}>logout</Link>
+        <button onClick={logout}>logout</button>
       </li>
     </ul>
   );

@@ -1,5 +1,5 @@
 import { Action, Reducer, Dispatch } from 'redux';
-import { IUser, prepareCurrentUser } from '../models/user';
+import { IUser, prepareCurrentUser, logout } from '../models/user';
 import { IResponse, Status } from '../models/response';
 
 export interface ICurrentUserState {
@@ -75,4 +75,9 @@ export const prepareCurrentUserAction = async (dispatch: Dispatch<CurrentUserAct
     console.error(e);
     dispatch({ type: ActionName.failure });
   }
+};
+
+export const logoutAction = async (dispatch: Dispatch<CurrentUserAction>) => {
+  await logout();
+  dispatch({ type: ActionName.logout });
 };
