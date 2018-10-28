@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "firebase-tools": "^6.0.0"
+  },
+  "scripts": {
+    "deploy:db:dev": "firebase deploy --only firestore --project dev"
   }
 }
