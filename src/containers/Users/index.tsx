@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { compose } from 'recompose';
+import { compose, withState } from 'recompose';
 import { Action, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
@@ -13,6 +13,8 @@ import { IUser } from '../../models/user';
 
 import Loading from '../../components/Loading';
 import BaseLayout from '../../components/BaseLayout';
+import Profile from './Profile';
+import ProfileEdit from './ProfileEdit';
 
 interface IMapStateProps {
   currentUser: IResponse<IUser>;
@@ -34,9 +36,19 @@ const mapDispatchToProps = (dispatch: Dispatch<Action>): IMapDispatchProps => ({
   logout: () => logoutAction(dispatch),
 });
 
-type AllProps = IMapStateProps & IMapDispatchProps & RouteComponentProps<{ uid: string }> & React.Props<{}>;
+interface IInnerProps {
+  isEditMode: boolean;
+  setIsEditMode: (m: boolean) => void;
+}
+
+type AllProps = IInnerProps &
+  IMapStateProps &
+  IMapDispatchProps &
+  RouteComponentProps<{ uid: string }> &
+  React.Props<{}>;
 
 const enhance = compose<{}, {}>(
+  withState('isEditMode', 'setIsEditMode', false),
   connect(
     mapStateToProps,
     mapDispatchToProps
@@ -63,7 +75,7 @@ const UsersContainer = (props: AllProps) => {
     );
   }
 
-  if (targetUser.status === Status.failure || !targetUser.res) {
+  if (!targetUser.res || targetUser.status === Status.failure) {
     return (
       <BaseLayout currentUser={currentUser} logout={logout}>
         <>読み込めませんでした...</>;
@@ -71,9 +83,30 @@ const UsersContainer = (props: AllProps) => {
     );
   }
 
+  const targetUserRes = targetUser.res;
+
   return (
     <BaseLayout currentUser={currentUser} logout={logout}>
-      <div>{JSON.stringify(targetUser)}</div>
+      {(() => {
+        if (currentUser.res && currentUser.res.uid === targetUserRes.uid) {
+          if (props.isEditMode) {
+            return (
+              <>
+                <ProfileEdit user={targetUserRes} />
+                <button onClick={() => props.setIsEditMode(false)}>Cancel</button>
+              </>
+            );
+          }
+
+          return (
+            <>
+              <Profile user={targetUserRes} />
+              <button onClick={() => props.setIsEditMode(true)}>Edit</button>
+            </>
+          );
+        }
+        return <Profile user={targetUserRes} />;
+      })()}
     </BaseLayout>
   );
 };
